@@ -1,30 +1,242 @@
 #include <iostream>
-#include <string>
-#include <deque>
+#include <locale>
 
-#include "Student.h"
-#include "Teacher.h"
 #include "SchoolClass.h"
 #include "School.h"
 
-using namespace std;
+class MenagementConsole
+{
+private:
+	School* school;
+
+	static enum Actions {
+		ADD_STUDENT,
+		DELETE_STUDENT,
+		ADD_TEACHER,
+		DELETE_TEACHER,
+		GET_COUNT_STUDENTS,
+		GET_COUNT_TEACHERS,
+		GET_TITLE_SCHOOL,
+		EXIT
+	};
+
+public:
+	MenagementConsole()
+	{
+		string schoolTitle;
+
+		do {
+			cout << "Введите название школы: ";
+			cin >> schoolTitle;
+		} while (schoolTitle.length() <= 0);
+
+		school = new School(schoolTitle);
+
+		int action;
+		bool isExit = false;
+
+		while (!isExit) {
+			cout << "Действия:" << endl;
+			cout << "0 - добавить ученика" << endl;
+			cout << "1 - удалить ученика" << endl;
+			cout << "2 - добавить учителя" << endl;
+			cout << "3 - удалить учителя" << endl;
+			cout << "4 - получить количество учеников" << endl;
+			cout << "5 - получить количество учителей" << endl;
+			cout << "6 - вывести название школы" << endl;
+			cout << "7 - выход" << endl;
+
+			do {
+				cout << "Введите номер действия: ";
+				cin >> action;
+			} while (action < 0 || action > 7);
+
+			switch (action)
+			{
+			case Actions::ADD_STUDENT:
+				addStudent();
+				break;
+
+			case Actions::DELETE_STUDENT:
+				deleteStudent();
+				break;
+
+			case Actions::ADD_TEACHER:
+				addTeacher();
+				break;
+
+			case Actions::DELETE_TEACHER:
+				deleteTeacher();
+				break;
+
+			case Actions::GET_COUNT_STUDENTS:
+				cout << "Количество учеников в школе: " << school->getCountStudents() << endl;
+				break;
+
+			case Actions::GET_COUNT_TEACHERS:
+				cout << "Количество учителей в школе: " << school->getCountTeachers() << endl;
+				break;
+
+			case Actions::GET_TITLE_SCHOOL:
+				cout << "Название школы: " << school->getTitleSchool() << endl;
+				break;
+
+			case Actions::EXIT:
+				isExit = true;
+				break;
+			}
+		}
+	}
+
+	void addStudent() {
+		string name, surname;
+
+		do {
+			cout << "Введите имя ученика: ";
+			cin >> name;
+			cout << "Введите фамилию ученика: ";
+			cin >> surname;
+		} while (name.length() < 3 || surname.length() < 3);
+
+		int day, month, year;
+
+		cout << "Введите дату рождения (через пробел - день, месяц и год): ";
+		cin >> day >> month >> year;
+
+		char letterClass;
+		int numberClass;
+
+		do {
+			cout << "Введите букву класса (английская большая буква): ";
+			cin >> letterClass;
+			cout << "Введите номер класса: ";
+			cin >> numberClass;
+		} while (letterClass < 'A' || letterClass > 'Z' || numberClass > 11 || numberClass < 1);
+
+		if (!school->searchClass(letterClass, numberClass)) {
+			school->addClass(letterClass, numberClass);
+			school->getSchoolClass(letterClass, numberClass)->addStudent(name, surname, { day, month, year });
+			cout << "Успешно!" << endl;
+		}
+
+		else {
+			SchoolClass* schoolClass = school->getSchoolClass(letterClass, numberClass);
+
+			if (!schoolClass->searchStudent(name, surname)) {
+				schoolClass->addStudent(name, surname, { day, month, year });
+				cout << "Успешно!" << endl;
+			}
+
+			else
+				cout << "Такой ученик уже обучается в школе!" << endl;
+		}
+	}
+
+	void deleteStudent()
+	{
+		string name, surname;
+		char letterClass;
+		int numberClass;
+
+		do {
+			cout << "Введите имя ученика: ";
+			cin >> name;
+			cout << "Введите фамилию ученика: ";
+			cin >> surname;
+			cout << "Введите букву класса где он обучается (английская большая буква): ";
+			cin >> letterClass;
+			cout << "Введите номер класса где он обучается: ";
+			cin >> numberClass;
+		} while (name.length() < 3 || surname.length() < 3 || letterClass < 'A' ||
+			letterClass > 'Z' || numberClass > 11 || numberClass < 1);
+
+		if (school->searchClass(letterClass, numberClass)) {
+			SchoolClass* temp = school->getSchoolClass(letterClass, numberClass);
+
+			if (temp->searchStudent(name, surname)) {
+				temp->deleteStudent(name, surname);
+				cout << "Ученик уален!" << endl;
+			}
+
+			else
+				cout << "Такого ученика не существует!" << endl;
+		}
+
+		else
+			cout << "Такого класса с этим учеником не существует!" << endl;
+	}
+
+	void addTeacher()
+	{
+		string name, surname;
+
+		do {
+			cout << "Введите имя учителя: ";
+			cin >> name;
+			cout << "Введите фамилию учителя: ";
+			cin >> surname;
+		} while (name.length() < 3 || surname.length() < 3);
+
+		int day, month, year;
+
+		cout << "Введите дату рождения (через пробел - день, месяц и год): ";
+		cin >> day >> month >> year;
+
+		cout << "Существующие специальности:" << endl;
+		cout << "0 - математика" << endl;
+		cout << "1 - физика" << endl;
+		cout << "2 - биология" << endl;
+		cout << "3 - информатика" << endl;
+
+		int specialty;
+
+		do {
+			cout << "Введите специальность учителя: ";
+			cin >> specialty;
+		} while (specialty > 3 || specialty < 0);
+
+		if (!school->searchTeacher(name, surname)) {
+			school->addTeacher(name, surname, { day, month, year }, (Teacher::Specialty) specialty);
+			cout << "Учитель добавлен!" << endl;
+		}
+
+		else
+			cout << "Такой учитель уже существует!" << endl;
+	}
+
+	void deleteTeacher()
+	{
+		string name, surname;
+
+		do {
+			cout << "Введите имя учителя: ";
+			cin >> name;
+			cout << "Введите фамилию учителя: ";
+			cin >> surname;
+		} while (name.length() < 3 || surname.length() < 3);
+
+		if (school->searchTeacher(name, surname)) {
+			school->deleteTeacher(name, surname);
+			cout << "Учитель удален!" << endl;
+		}
+
+		else
+			cout << "Такого учителя не существует!" << endl;
+	}
+
+	~MenagementConsole() {
+		delete school;
+	}
+};
 
 int main()
 {
-	School school;
+	setlocale(LC_ALL, "RUS");
 
-	Student student("name", "surname", Date(10, 5, 19), 'A', 9);
-	Student student2("name2", "surname2", Date(10, 5, 19), 'B', 9);
-	Student student3("name3", "surname3", Date(10, 5, 19), 'C', 9);
-
-	school.addStudent(student);
-	school.addStudent(student2);
-	school.addStudent(student3);
-
-	string searchName("name2"), searchSurname("surname2");
-
-	cout << school.searchStudent(searchName, searchSurname) << endl;
+	MenagementConsole mc = MenagementConsole();
 
 	cin.get();
+	cin.get();
+
 	return 0;
 }

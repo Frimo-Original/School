@@ -1,3 +1,4 @@
+#pragma once
 
 #include "Human.h"
 
@@ -15,21 +16,20 @@ private:
 
 public:
 	Teacher(string name, string surname, Date birthday, Specialty specialty) : Human(name, surname, birthday),
-		specialty(specialty) {
-	}
+		specialty(specialty) { }
 
 	string getSpecialty()
 	{
 		switch (specialty)
 		{
 		case MATHS:
-			return "Maths";
+			return "Математика";
 		case BIOLOGY:
-			return "Biology";
+			return "Биология";
 		case PHYSICS:
-			return "Physics";
+			return "Физика";
 		case COMPUTER_SCIENCE:
-			return "Computer science";
+			return "Информатика";
 		}
 	}
 };
