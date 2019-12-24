@@ -47,6 +47,15 @@ public:
 		return NULL;
 	}
 
+	vector<Student*> getStudents() {
+		vector<Student*> students_copy;
+
+		for (Student* i : students)
+			students_copy.push_back(i);
+		
+		return students_copy;
+	}
+
 	int getCountStudents() {
 		return students.size();
 	}

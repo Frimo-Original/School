@@ -1,5 +1,6 @@
 #include <iostream>
 #include <locale>
+#include <windows.h>
 
 #include "SchoolClass.h"
 #include "School.h"
@@ -17,6 +18,8 @@ private:
 		GET_COUNT_STUDENTS,
 		GET_COUNT_TEACHERS,
 		GET_TITLE_SCHOOL,
+		PRINT_DATA_STUDENTS,
+		PRINT_DATA_CLASS_STUDENTS,
 		EXIT
 	};
 
@@ -44,12 +47,14 @@ public:
 			cout << "4 - получить количество учеников" << endl;
 			cout << "5 - получить количество учителей" << endl;
 			cout << "6 - вывести название школы" << endl;
-			cout << "7 - выход" << endl;
+			cout << "7 - вывести данные всех учеников" << endl;
+			cout << "8 - вывести данные всех учеников класса" << endl;
+			cout << "9 - выход" << endl;
 
 			do {
 				cout << "Введите номер действия: ";
 				cin >> action;
-			} while (action < 0 || action > 7);
+			} while (action < 0 || action > (int) Actions::EXIT);
 
 			switch (action)
 			{
@@ -79,6 +84,21 @@ public:
 
 			case Actions::GET_TITLE_SCHOOL:
 				cout << "Название школы: " << school->getTitleSchool() << endl;
+				break;
+
+			case Actions::PRINT_DATA_STUDENTS:
+				cout << "    Имя     Фамилия    Дата рождения    Класс" << endl << endl;
+				for (Student* i : school->getListStudents()) {
+					cout << "    " << i->getName() << "    " << i->getSurname() << "    ";
+					cout << i->getBirthday().getDay() << "." << i->getBirthday().getMonth() << "." << i->getBirthday().getYear() << "    ";
+					cout << i->getNumberClass()<< " - " << i->getLetterClass() << endl;
+				}
+
+				cout << endl;
+				break;
+
+			case Actions::PRINT_DATA_CLASS_STUDENTS:
+				printDataClassStudents();
 				break;
 
 			case Actions::EXIT:
@@ -224,6 +244,35 @@ public:
 			cout << "Такого учителя не существует!" << endl;
 	}
 
+	void printDataClassStudents()
+	{
+		char letterClass;
+		int numberClass;
+
+		do {
+			cout << "Введите букву класса (английская большая буква): ";
+			cin >> letterClass;
+			cout << "Введите номер класса: ";
+			cin >> numberClass;
+		} while (letterClass < 'A' || letterClass > 'Z' || numberClass > 11 || numberClass < 1);
+
+		SchoolClass* schoolClass = school->getSchoolClass(letterClass, numberClass);
+
+		if (schoolClass != NULL) {
+			cout << "    Имя     Фамилия    Дата рождения    Класс " << numberClass << " - " << letterClass << endl << endl;
+
+			for (Student* i : schoolClass->getStudents()) {
+				cout << "    " << i->getName() << "    " << i->getSurname() << "    ";
+				cout << i->getBirthday().getDay() << "." << i->getBirthday().getMonth() << "." << i->getBirthday().getYear() << "    " << endl;
+			}
+
+			cout << endl;
+		}
+
+		else
+			cout << "Такого класса нет!" << endl;
+	}
+
 	~MenagementConsole() {
 		delete school;
 	}
@@ -232,6 +281,8 @@ public:
 int main()
 {
 	setlocale(LC_ALL, "RUS");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 
 	MenagementConsole mc = MenagementConsole();
 

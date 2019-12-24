@@ -93,4 +93,15 @@ public:
 	int getCountTeachers() {
 		return teachers.size();
 	}
+
+	vector<Student*> getListStudents()
+	{
+		vector<Student*> students;
+
+		for (SchoolClass* i : classes)
+			for (Student* j : i->getStudents())
+				students.push_back(j);
+
+		return students;
+	}
 };
