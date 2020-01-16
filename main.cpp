@@ -4,7 +4,6 @@
 
 #include "SchoolClass.h"
 #include "School.h"
-//#include "MenagementConsole.h"
 #include "VectorHuman.h"
 #include "VectorSchoolClasses.h"
 
