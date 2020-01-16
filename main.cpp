@@ -4,8 +4,9 @@
 
 #include "SchoolClass.h"
 #include "School.h"
-#include "MenagementConsole.h"
+//#include "MenagementConsole.h"
 #include "VectorHuman.h"
+#include "VectorSchoolClasses.h"
 
 int main()
 {
@@ -19,7 +20,9 @@ int main()
 	VectorSchoolClasses* listClasses = school.getVectorSchoolClasses();
 	listClasses->addClass('A', 9);
 	SchoolClass* classA = listClasses->getSchoolClass('A', 9);
-	classA->getVectorStudents()->addHuman(new Student("name", "surname", {10, 10, 10}, 'A', 9));
+	classA->addHuman(new Student("name", "surname", { 10, 10, 10 }, 'A', 9));
+	classA->addHuman(new Student("name", "surname", { 10, 10, 10 }, 'S', 9));
+	classA->addHuman(new Student("name2", "surname2", { 10, 10, 10 }, 'A', 9));
 
 	cout << school.getCountStudents();
 

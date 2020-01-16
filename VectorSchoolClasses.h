@@ -36,10 +36,10 @@ public:
 
 	vector<SchoolClass*> getvectorSchoolClass() {
 		vector<SchoolClass*> temp;
-	
+
 		for (SchoolClass* i : classes)
 			temp.push_back(i);
-		
+
 		return temp;
 	}
 

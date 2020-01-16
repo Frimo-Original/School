@@ -7,22 +7,11 @@
 
 class SchoolClass : public InfoClass, public VectorHuman<Student>
 {
-private:
-	VectorHuman<Student>* students = new VectorHuman<Student>();
-
 public:
 	SchoolClass(char letterClass, int numberClass) : InfoClass(letterClass, numberClass) {}
 
-	VectorHuman<Student>* getVectorStudents() {
-		return students;
+	void addHuman(Student* object) {
+		if (object->getLetterClass() == getLetterClass() && object->getNumberClass() == getNumberClass())
+			VectorHuman::addHuman(object);
 	}
-
-	~SchoolClass() {
-		delete students;
-	}
-	/*void addHuman(Student* student) : addHuman(student) {
-
-	}*/
-
-	/**/
 };

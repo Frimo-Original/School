@@ -13,7 +13,7 @@ private:
 	string title;
 
 public:
-	School(string title): title(title) {}
+	School(string title) : title(title) {}
 
 	string getTitleSchool() {
 		return title;
@@ -31,7 +31,7 @@ public:
 		int count = 0;
 
 		for (SchoolClass* i : classes->getvectorSchoolClass())
-			count += i->getVectorStudents()->getCountHumans();
+			count += i->getCountHumans();
 
 		return count;
 	}
@@ -41,7 +41,7 @@ public:
 		vector<Student*> students;
 
 		for (SchoolClass* i : classes->getvectorSchoolClass())
-			for (Student* j : i->getVectorStudents()->getvectorStudents())
+			for (Student* j : i->getvectorStudents())
 				students.push_back(j);
 
 		return students;
